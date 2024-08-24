@@ -1,0 +1,251 @@
+# ROS2 HUMBLE indir
+
+locale  # check for UTF-8
+
+sudo apt update && sudo apt install locales
+
+sudo locale-gen en_US en_US.UTF-8
+
+sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+
+export LANG=en_US.UTF-8
+
+locale  # verify settings
+
+#kaynaklari kurun
+sudo apt install software-properties-common
+
+sudo add-apt-repository universe
+
+sudo apt update && sudo apt install curl -y
+
+sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+sudo apt update
+
+sudo apt upgrade
+
+sudo apt install ros-humble-desktop
+
+sudo apt install ros-dev-tools
+
+gedit ~/.bashrc
+#asagidakini en asagiya yapistirin
+source /opt/ros/humble/setup.bash
+#terminala tanimlamak icin asagidaki kodu terminale yapistir
+source ~/.bashrc
+#ROS2 calisma alani olusturma
+
+mkdir -p ~/ros2_ws/src
+cd ~/ros2_ws/src
+
+git clone https://github.com/ros/ros_tutorials.git -b humble
+#ros2_ws geri donme
+cd ..
+#asagidakini yaptiktan sonra terminalde istenenleri sirasiyla yapin sonra tekrar asagidakini yapistir
+rosdep install -i --from-path src --rosdistro humble -y
+#terminal ekraninda asagidaki yazacak
+#All required rosdeps installed successfully 
+#build etmek icin asagidakini terminale yapistir
+
+colcon build
+
+source install/local_setup.bash
+
+#asagidakini terminale yazdiginda bir ekran acilacak ve kaplumbaga cikacak acildiktan sonra kapat
+ros2 run turtlesim turtlesim_node
+
+#step2
+
+printenv | grep -i ROS
+
+#sonrasinda asagidaki 
+
+gedit ~/.bashrc
+
+#asagidakileri yapistir
+
+export ROS_DOMAIN_ID=22
+export ROS_LOCALHOST_ONLY=1
+
+#terminale asagidakini yazarak tanimla
+source ~/.bashrc
+#asagidaki yazarak ros2_ws den cik
+cd 
+#sonraki step
+
+sudo apt install default-jre
+
+git clone --recurse-submodules https://github.com/ardupilot/Micro-XRCE-DDS-Gen.git
+
+cd Micro-XRCE-DDS-Gen
+
+./gradlew assemble
+
+#sonrasinda asagidaki 
+
+gedit ~/.bashrc
+
+#asagidakileri yapistir
+
+export PATH=$PATH:~/Micro-XRCE-DDS-Gen/scripts
+
+#terminale asagidakini yazarak tanimla
+source ~/.bashrc
+
+#asagidakini yaz
+microxrceddsgen -version
+
+#ARDUPILOT kurulumu
+
+cd
+
+sudo apt-get update
+sudo apt-get install git
+sudo apt-get install gitk git-gui
+sudo apt-get install gcc-arm-none-eabi
+
+git clone https://github.com/ArduPilot/ardupilot.git 
+cd ardupilot
+git submodule update --init --recursive
+
+git status
+
+./waf distclean
+
+./waf distclean
+
+./waf configure --board MatekF405-Wing
+
+./waf plane
+
+git pull
+
+Tools/environment_install/install-prereqs-ubuntu.sh -y
+
+./waf clean
+
+./waf configure --board sitl
+
+./waf copter -v
+
+#ROS2 Buildings
+
+cd ~/ros2_ws
+
+vcs import --recursive --input  https://raw.githubusercontent.com/ArduPilot/ardupilot/master/Tools/ros2/ros2.repos src
+
+sudo apt update
+
+rosdep update
+
+source /opt/ros/humble/setup.bash
+
+rosdep install --from-paths src --ignore-src
+
+sudo apt install default-jre
+
+git clone --recurse-submodules https://github.com/ardupilot/Micro-XRCE-DDS-Gen.git
+
+cd Micro-XRCE-DDS-Gen
+
+./gradlew assemble
+
+echo "export PATH=\$PATH:$PWD/scripts" >> ~/.bashrc
+
+source ~/.bashrc
+
+microxrceddsgen -version
+
+cd ~/ros2_ws
+colcon build --packages-up-to ardupilot_dds_tests
+
+source ./install/setup.bash
+
+colcon test --packages-select ardupilot_dds_tests
+
+colcon test-result --all --verbose
+
+#ardupilota geri donuyoruz
+
+cd ~/ardupilot/Tools/autotest
+
+sudo pip3 install MAVProxy
+
+mavproxy.py --version
+
+#ne yapcagini biliyosun
+gedit ~/.bashrc
+export PATH=$PATH:/path/to/mavproxy
+source ~/.bashrc
+
+#SITL buildings
+
+./sim_vehicle.py -v ArduCopter -w
+
+./sim_vehicle.py -v ArduCopter --console --map
+
+./sim_vehicle.py -v ArduCopter -L KSFO --console --map
+
+./sim_vehicle.py -v ArduPlane -f quadplane --console --map --osd
+
+./sim_vehicle.py -v ArduCopter -f quadcopter --console --map --osd
+
+#GAZEBO GARDEN kurulumu
+
+sudo apt-get update
+sudo apt-get install lsb-release curl gnupg
+
+sudo curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
+
+sudo apt-get update
+
+sudo apt-get install gz-garden
+
+#ROS2 and SITL with GAZEBO
+cd ~/ros2_ws
+
+vcs import --input https://raw.githubusercontent.com/ArduPilot/ardupilot_gz/main/ros2_gz.repos --recursive src
+
+
+#  :|  #
+
+gedit ~/.bashrc
+export GZ_VERSION=garden
+source ~/.bashrc
+
+gedit ~/.bashrc
+source ~/ros2_ws/install/setup.sh
+source ~/.bashrc
+
+#devam
+
+cd ~/ros2_ws
+source /opt/ros/humble/setup.bash
+sudo apt update
+rosdep update
+rosdep install --from-paths src --ignore-src -r
+# BUILDING
+
+colcon build --packages-up-to ardupilot_gz_bringup
+
+#test etmek icin
+cd ~/ros2_ws
+source install/setup.bash
+colcon test --packages-select ardupilot_sitl ardupilot_dds_tests ardupilot_gazebo ardupilot_gz_applications ardupilot_gz_description ardupilot_gz_gazebo ardupilot_gz_bringup
+colcon test-result --all --verbose
+
+#son olarak ortamlarimizi calistirmak icin
+
+ros2 launch ardupilot_gz_bringup iris_runway.launch.py
+
+mavproxy.py --console --map --aircraft test --master=:14550
+
+
+
+
+
