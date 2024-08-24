@@ -1,4 +1,4 @@
-# ROS2 HUMBLE indir
+# ROS2 HUMBLE download
 
 locale  # check for UTF-8
 
@@ -12,7 +12,7 @@ export LANG=en_US.UTF-8
 
 locale  # verify settings
 
-#kaynaklari kurun
+#build sources
 sudo apt install software-properties-common
 
 sudo add-apt-repository universe
@@ -32,11 +32,12 @@ sudo apt install ros-humble-desktop
 sudo apt install ros-dev-tools
 
 gedit ~/.bashrc
-#asagidakini en asagiya yapistirin
+#paste the following in the last line of the bashrc
 source /opt/ros/humble/setup.bash
-#terminala tanimlamak icin asagidaki kodu terminale yapistir
+#Paste the following code into the terminal to define it in the terminal
 source ~/.bashrc
-#ROS2 calisma alani olusturma
+
+#Building ROS2 workspace
 
 mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
@@ -44,37 +45,38 @@ cd ~/ros2_ws/src
 git clone https://github.com/ros/ros_tutorials.git -b humble
 #ros2_ws geri donme
 cd ..
-#asagidakini yaptiktan sonra terminalde istenenleri sirasiyla yapin sonra tekrar asagidakini yapistir
+#After doing the following, do what is asked in the terminal in order, then paste the following again
 rosdep install -i --from-path src --rosdistro humble -y
-#terminal ekraninda asagidaki yazacak
-#All required rosdeps installed successfully 
-#build etmek icin asagidakini terminale yapistir
+#The following will appear on the terminal screen
 
+#All required rosdeps installed successfully 
+
+#paste the following into the terminal to build
 colcon build
 
 source install/local_setup.bash
 
-#asagidakini terminale yazdiginda bir ekran acilacak ve kaplumbaga cikacak acildiktan sonra kapat
+#When you type the following into the terminal, a screen will open and a turtle will appear. Close it after it opens.
 ros2 run turtlesim turtlesim_node
 
 #step2
 
 printenv | grep -i ROS
 
-#sonrasinda asagidaki 
+#you know what happens next
 
 gedit ~/.bashrc
 
-#asagidakileri yapistir
+#paste the following in the last line of the bashrc
 
 export ROS_DOMAIN_ID=22
 export ROS_LOCALHOST_ONLY=1
 
-#terminale asagidakini yazarak tanimla
+#Paste the following code into the terminal to define it in the terminal
 source ~/.bashrc
-#asagidaki yazarak ros2_ws den cik
+#----------------
 cd 
-#sonraki step
+#next step
 
 sudo apt install default-jre
 
@@ -84,21 +86,21 @@ cd Micro-XRCE-DDS-Gen
 
 ./gradlew assemble
 
-#sonrasinda asagidaki 
+#open new terminal  
 
 gedit ~/.bashrc
 
-#asagidakileri yapistir
+#paste the following in the last line of the bashrc
 
 export PATH=$PATH:~/Micro-XRCE-DDS-Gen/scripts
 
-#terminale asagidakini yazarak tanimla
+#Paste the following code into the terminal to define it in the terminal
 source ~/.bashrc
 
-#asagidakini yaz
+#write that in the terminal
 microxrceddsgen -version
 
-#ARDUPILOT kurulumu
+# Building ARDUPILOT
 
 cd
 
@@ -168,7 +170,7 @@ colcon test --packages-select ardupilot_dds_tests
 
 colcon test-result --all --verbose
 
-#ardupilota geri donuyoruz
+# return to ardupilot
 
 cd ~/ardupilot/Tools/autotest
 
@@ -176,7 +178,7 @@ sudo pip3 install MAVProxy
 
 mavproxy.py --version
 
-#ne yapcagini biliyosun
+#you know what to do
 gedit ~/.bashrc
 export PATH=$PATH:/path/to/mavproxy
 source ~/.bashrc
@@ -222,7 +224,7 @@ gedit ~/.bashrc
 source ~/ros2_ws/install/setup.sh
 source ~/.bashrc
 
-#devam
+#continue
 
 cd ~/ros2_ws
 source /opt/ros/humble/setup.bash
@@ -233,16 +235,17 @@ rosdep install --from-paths src --ignore-src -r
 
 colcon build --packages-up-to ardupilot_gz_bringup
 
-#test etmek icin
+#to test
 cd ~/ros2_ws
 source install/setup.bash
 colcon test --packages-select ardupilot_sitl ardupilot_dds_tests ardupilot_gazebo ardupilot_gz_applications ardupilot_gz_description ardupilot_gz_gazebo ardupilot_gz_bringup
 colcon test-result --all --verbose
 
-#son olarak ortamlarimizi calistirmak icin
+#the last one to run our environments
 
 ros2 launch ardupilot_gz_bringup iris_runway.launch.py
 
+#another terminal
 mavproxy.py --console --map --aircraft test --master=:14550
 
 
