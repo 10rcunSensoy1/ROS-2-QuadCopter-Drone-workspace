@@ -43,7 +43,7 @@ mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
 
 git clone https://github.com/ros/ros_tutorials.git -b humble
-#ros2_ws geri donme
+#return to ros2_ws 
 cd ..
 #After doing the following, do what is asked in the terminal in order, then paste the following again
 rosdep install -i --from-path src --rosdistro humble -y
